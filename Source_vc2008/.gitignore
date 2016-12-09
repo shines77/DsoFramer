@@ -30,7 +30,7 @@
 /lib/
 
 # Ignore Executables
-# *.exe
+*.exe
 *.out
 *.app
 
@@ -50,7 +50,7 @@ Icon?
 
 # Ignore files build by Visual Studio
 *.obj
-# *.pdb
+*.pdb
 *.iobj
 *.ipdb
 *.dep
