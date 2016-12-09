@@ -17,7 +17,9 @@
  *
  ***************************************************************************/
 
-#define INITGUID // Init the GUIDS for the control...
+// Init the GUIDS for the control...
+#define INITGUID
+
 #include "dsoframer.h"
 
 HINSTANCE        v_hModule        = NULL;   // DLL module handle
@@ -26,6 +28,7 @@ ULONG            v_cLocks         = 0;      // Count of server locks
 HICON            v_icoOffDocIcon  = NULL;   // Small office icon (for caption bar)
 BOOL             v_fUnicodeAPI    = FALSE;  // Flag to determine if we should us Unicode API
 BOOL             v_fWindows2KPlus = FALSE;
+
 CRITICAL_SECTION v_csecThreadSynch;
 
 ////////////////////////////////////////////////////////////////////////
@@ -68,6 +71,7 @@ extern "C" BOOL APIENTRY _DllMainCRTStartup(HINSTANCE hDllHandle, DWORD dwReason
 #endif
 
 ////////////////////////////////////////////////////////////////////////
+//
 // Standard COM DLL Entry Points
 //
 //
@@ -81,15 +85,16 @@ STDAPI DllCanUnloadNow()
 }
 
 ////////////////////////////////////////////////////////////////////////
+//
 // DllGetClassObject
 //
 //  Returns IClassFactory instance for FramerControl. We only support
 //  this one object for creation.
 //
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void** ppv)
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void **ppv)
 {
     HRESULT hr;
-    CDsoFramerClassFactory* pcf;
+    CDsoFramerClassFactory *pcf;
 
     CHECK_NULL_RETURN(ppv, E_POINTER);
     *ppv = NULL;
@@ -105,14 +110,19 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void** ppv)
     // Get requested interface.
     if (FAILED(hr = pcf->QueryInterface(riid, ppv)))
     {
-        *ppv = NULL; delete pcf;
+        *ppv = NULL;
+        delete pcf;
     }
-    else InterlockedIncrement((LPLONG)&v_cLocks);
+    else
+    {
+        InterlockedIncrement((LPLONG)&v_cLocks);
+    }
 
     return hr;
 }
 
 ////////////////////////////////////////////////////////////////////////
+//
 // DllRegisterServer
 //
 //  Registration of the OCX.
@@ -124,7 +134,7 @@ STDAPI DllRegisterServer()
     DWORD   dwret;
     CHAR    szbuffer[256];
     LPWSTR  pwszModule;
-    ITypeInfo* pti;
+    ITypeInfo *pti;
 
     // If we can't find the path to the DLL, we can't register...
     if (!FGetModuleFileName(v_hModule, &pwszModule))
@@ -179,7 +189,10 @@ STDAPI DllRegisterServer()
         {
             RegCloseKey(hk2);
         }
-        else hr = HRESULT_FROM_WIN32(dwret);
+        else
+        {
+            hr = HRESULT_FROM_WIN32(dwret);
+        }
     }
 
     // If we succeeded so far, andle the remaining (non-critical) reg keys...
@@ -263,6 +276,7 @@ STDAPI DllRegisterServer()
 }
 
 ////////////////////////////////////////////////////////////////////////
+//
 // RegRecursiveDeleteKey
 //
 //  Helper function called by DllUnregisterServer for nested key removal.
@@ -304,6 +318,7 @@ static HRESULT RegRecursiveDeleteKey(HKEY hkParent, LPCSTR pszSubKey)
 }
 
 ////////////////////////////////////////////////////////////////////////
+//
 // DllUnregisterServer
 //
 //  Removal code for the OCX.

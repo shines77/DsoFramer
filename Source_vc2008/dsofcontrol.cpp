@@ -698,7 +698,8 @@ STDMETHODIMP_(void) CDsoFramerControl::OnMouseMove(UINT x, UINT y)
             if (PtInRect(&m_rgrcMenuItems[item], pt))
                 return;
 
-            ReleaseCapture(); m_wSelMenuItem = 0;
+            ReleaseCapture();
+            m_wSelMenuItem = 0;
             InvalidateRect(m_hwnd, &m_rgrcMenuItems[item], FALSE);
         }
 
@@ -732,7 +733,8 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
     RECT rc;
 
     // Don't do anything if we are in modal state...
-    if (m_fModalState) return;
+    if (m_fModalState)
+        return;
 
     // We don't handle commands when m_fNoInteractive is set, except for the
     // condition where we are in print preview and want to display custom menu
@@ -743,7 +745,8 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
         if ((m_pDocObjFrame) && (m_pDocObjFrame->InPrintPreview()))
         {
             // If we don't have UI focus, take it...
-            if (!m_fUIActive) UIActivate(TRUE);
+            if (!m_fUIActive)
+                UIActivate(TRUE);
 
             // Create a temp popup menu. We do this on fly to save resources since
             // this is only needed in rare cases...
@@ -756,7 +759,7 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
                     AppendMenu(hCurMenu, MF_STRING,  MNU_PRINTPV, "E&xit Preview");
                     // Display the menu...
                     GetSizeRectAfterTitlebar(NULL, &rc);
-                    MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT*)&rc, 2);
+                    MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT *)&rc, 2);
                     TrackPopupMenu(hCurMenu, 0, rc.left, rc.top - 1, 0, m_hwnd, NULL);
                     // Cleanup...
                     DestroyMenu(hCurMenu);
@@ -785,7 +788,7 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
         {
             // We'll place it right below the titlebar just like sys menu...
             GetSizeRectAfterTitlebar(NULL, &rc);
-            MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT*)&rc, 2);
+            MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT *)&rc, 2);
             TrackPopupMenu(hCurMenu, 0, rc.left, rc.top - 1, 0, m_hwnd, NULL);
         }
     }
@@ -810,7 +813,7 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
         // Map the location to display the popup into screen points...
         pt.x = m_rgrcMenuItems[item].left;
         pt.y = m_rgrcMenuItems[item].bottom;
-        MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT*)&pt, 1);
+        MapWindowPoints(m_hwnd, HWND_DESKTOP, (POINT *)&pt, 1);
 
         HWND hwndCurFocus = GetFocus();
         m_fInFocusChange = TRUE;
@@ -829,7 +832,7 @@ STDMETHODIMP_(void) CDsoFramerControl::OnButtonDown(UINT x, UINT y)
         if (GetCursorPos(&pt))
         {
             RECT rcMenu; GetSizeRectForMenuBar(NULL, &rcMenu);
-            MapWindowPoints(HWND_DESKTOP, m_hwnd, (POINT*)&pt, 1);
+            MapWindowPoints(HWND_DESKTOP, m_hwnd, (POINT *)&pt, 1);
             if (!PtInRect(&rcMenu, pt)) {pt.x = 0; pt.y = 0;}
         }
         else
@@ -2062,7 +2065,7 @@ STDMETHODIMP_(LRESULT) CDsoFramerControl::ControlWindowProc(HWND hwnd, UINT msg,
 //   STDMETHODIMP_(ULONG) AddRef(void);
 //   STDMETHODIMP_(ULONG) Release(void);
 //
-STDMETHODIMP CDsoFramerControl::XInternalUnknown::QueryInterface(REFIID riid, void ** ppv)
+STDMETHODIMP CDsoFramerControl::XInternalUnknown::QueryInterface(REFIID riid, void **ppv)
 {
     // ODS("CDsoFramerControl::InternalQueryInterface\n");
     CHECK_NULL_RETURN(ppv, E_POINTER);
@@ -2072,51 +2075,51 @@ STDMETHODIMP CDsoFramerControl::XInternalUnknown::QueryInterface(REFIID riid, vo
 
     if (IID_IUnknown == riid)
     {
-        *ppv = (IUnknown*)this;
+        *ppv = (IUnknown *)this;
     }
     else if ((IID_IDispatch == riid) || (IID__FramerControl == riid))
     {
-        *ppv = (_FramerControl*)pThis;
+        *ppv = (_FramerControl *)pThis;
     }
     else if (IID_IOleObject == riid)
     {
-        *ppv = (IOleObject*)&(pThis->m_xOleObject);
+        *ppv = (IOleObject *)&(pThis->m_xOleObject);
     }
     else if (IID_IOleControl == riid)
     {
-        *ppv = (IOleControl*)&(pThis->m_xOleControl);
+        *ppv = (IOleControl *)&(pThis->m_xOleControl);
     }
     else if (IID_IPersistPropertyBag == riid)
     {
-        *ppv = (IPersistPropertyBag*)&(pThis->m_xPersistPropertyBag);
+        *ppv = (IPersistPropertyBag *)&(pThis->m_xPersistPropertyBag);
     }
     else if ((IID_IPersistStreamInit == riid) || (IID_IPersistStream == riid) || (IID_IPersist == riid))
     {
-        *ppv = (IPersistStreamInit*)&(pThis->m_xPersistStreamInit);
+        *ppv = (IPersistStreamInit *)&(pThis->m_xPersistStreamInit);
     }
     else if ((IID_IOleInPlaceObject == riid) || (IID_IOleWindow == riid))
     {
-        *ppv = (IOleInPlaceObject*)&(pThis->m_xOleInplaceObject);
+        *ppv = (IOleInPlaceObject *)&(pThis->m_xOleInplaceObject);
     }
     else if (IID_IOleInPlaceActiveObject == riid)
     {
-        *ppv = (IOleInPlaceActiveObject*)&(pThis->m_xOleInplaceActiveObject);
+        *ppv = (IOleInPlaceActiveObject *)&(pThis->m_xOleInplaceActiveObject);
     }
     else if ((IID_IViewObjectEx == riid) || (IID_IViewObject == riid) || (IID_IViewObject2 == riid))
     {
-        *ppv = (IViewObjectEx*)&(pThis->m_xViewObjectEx);
+        *ppv = (IViewObjectEx *)&(pThis->m_xViewObjectEx);
     }
     else if (IID_IDataObject == riid)
     {
-        *ppv = (IDataObject*)&(pThis->m_xDataObject);
+        *ppv = (IDataObject *)&(pThis->m_xDataObject);
     }
     else if (IID_ISupportErrorInfo == riid)
     {
-        *ppv = (ISupportErrorInfo*)&(pThis->m_xSupportErrorInfo);
+        *ppv = (ISupportErrorInfo *)&(pThis->m_xSupportErrorInfo);
     }
     else if (IID_IProvideClassInfo == riid)
     {
-        *ppv = (IProvideClassInfo*)&(pThis->m_xProvideClassInfo);
+        *ppv = (IProvideClassInfo *)&(pThis->m_xProvideClassInfo);
     }
     else if (IID_IConnectionPointContainer == riid)
     {
@@ -2124,27 +2127,27 @@ STDMETHODIMP CDsoFramerControl::XInternalUnknown::QueryInterface(REFIID riid, vo
     }
     else if (IID_IConnectionPoint == riid)
     {
-        *ppv = (IConnectionPoint*)&(pThis->m_xConnectionPoint);
+        *ppv = (IConnectionPoint *)&(pThis->m_xConnectionPoint);
     }
     else if (IID_IEnumConnectionPoints == riid)
     {
-        *ppv = (IEnumConnectionPoints*)&(pThis->m_xEnumConnectionPoints);
+        *ppv = (IEnumConnectionPoints *)&(pThis->m_xEnumConnectionPoints);
     }
     else if (IID_IPersistStorage == riid)
     {
-        *ppv = (IPersistStorage*)&(pThis->m_xPersistStorage);
+        *ppv = (IPersistStorage *)&(pThis->m_xPersistStorage);
     }
     else if (IID_IObjectSafety == riid)
     {
-        *ppv = (IObjectSafety*)&(pThis->m_xObjectSafety);
+        *ppv = (IObjectSafety *)&(pThis->m_xObjectSafety);
     }
     else if (IID_IOleCommandTarget == riid)
     {
-        *ppv = (IOleCommandTarget*)&(pThis->m_xOleCommandTarget);
+        *ppv = (IOleCommandTarget *)&(pThis->m_xOleCommandTarget);
     }
     else if ((IID_IDsoDocObjectSite == riid) || (IID_IServiceProvider == riid))
     {
-        *ppv = (IDsoDocObjectSite*)&(pThis->m_xDsoDocObjectSite);
+        *ppv = (IDsoDocObjectSite *)&(pThis->m_xDsoDocObjectSite);
     }
     else
     {
@@ -2154,7 +2157,7 @@ STDMETHODIMP CDsoFramerControl::XInternalUnknown::QueryInterface(REFIID riid, vo
 
     // AddRef those interfaces we will return...
     if (NULL != *ppv)
-        ((IUnknown*)(*ppv))->AddRef();
+        ((IUnknown *)(*ppv))->AddRef();
 
     return hr;
 }
@@ -2354,7 +2357,7 @@ STDMETHODIMP CDsoFramerControl::XPersistStreamInit::Save(LPSTREAM pStm, BOOL fCl
     hr = pStm->Write(&dwT, sizeof(DWORD), NULL);
     RETURN_ON_FAILURE(hr);
 
-    // clear out dirty flag and notify that we're done with save.
+    // Clear out dirty flag and notify that we're done with save.
     if (fClearDirty)
         pThis->m_fDirty = FALSE;
 
@@ -2409,7 +2412,7 @@ STDMETHODIMP CDsoFramerControl::XPersistPropertyBag::Load(IPropertyBag* pPropBag
 {
     VARIANT v;
     HRESULT hr;
-    SIZEL sl = {5000, 3000};
+    SIZEL sl = { 5000, 3000 };
 
     METHOD_PROLOGUE(CDsoFramerControl, PersistPropertyBag);
     ODS("CDsoFramerControl::XPersistPropertyBag::Load\n");
@@ -3340,7 +3343,7 @@ STDMETHODIMP CDsoFramerControl::XViewObjectEx::Draw(DWORD dwDrawAspect, LONG lIn
 
     if (!fMetafile)
     {
-        LPtoDP(hdcDraw, (POINT*)&rc, 2);
+        LPtoDP(hdcDraw, (POINT *)&rc, 2);
         SetViewportOrgEx(hdcDraw, 0, 0, &pVp);
         SetWindowOrgEx(hdcDraw, 0, 0, &pW);
         iMode = SetMapMode(hdcDraw, MM_TEXT);

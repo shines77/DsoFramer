@@ -149,21 +149,21 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
     HRESULT hr;
     IPrint *print;
     HANDLE hPrint;
-    DVTARGETDEVICE* ptd = NULL;
+    DVTARGETDEVICE *ptd = NULL;
 
     ODS("CDsoDocObject::PrintDocument\n");
     CHECK_NULL_RETURN(m_pole, E_UNEXPECTED);
 
     // First thing we need to do is ask object for IPrint. If it does not
     // support it, we cannot continue. It is up to DocObj if this is allowed...
-    hr = m_pole->QueryInterface(IID_IPrint, (void**)&print);
+    hr = m_pole->QueryInterface(IID_IPrint, (void **)&print);
     RETURN_ON_FAILURE(hr);
 
     // Now setup printer settings into DEVMODE for IPrint. Open printer
     // settings and gather default DEVMODE...
     if (FOpenPrinter(pwszPrinter, &hPrint))
     {
-        LPDEVMODEW pdevMode     = NULL;
+        LPDEVMODEW pDevMode     = NULL;
         LPWSTR pwszDefProcessor = NULL;
         LPWSTR pwszDefDriver    = NULL;
         LPWSTR pwszDefPort      = NULL;
@@ -171,13 +171,13 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
         DWORD  cbDevModeSize;
 
         if (FGetPrinterSettings(hPrint, &pwszDefProcessor,
-                &pwszDefDriver, &pwszDefPort, &pdevMode, &cbDevModeSize) && (pdevMode))
+                &pwszDefDriver, &pwszDefPort, &pDevMode, &cbDevModeSize) && (pDevMode))
         {
             DWORD cbPrintName, cbDeviceName, cbOutputName;
             DWORD cbDVTargetSize;
 
-            pdevMode->dmFields |= DM_COPIES;
-            pdevMode->dmCopies = (WORD)((cCopies) ? cCopies : 1);
+            pDevMode->dmFields |= DM_COPIES;
+            pDevMode->dmCopies = (WORD)((cCopies) ? cCopies : 1);
 
             pwszPort = ((pwszOutput) ? (LPWSTR)pwszOutput : pwszDefPort);
 
@@ -187,7 +187,7 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
             cbOutputName = ((lstrlenW(pwszPort)         + 1) * sizeof(WCHAR));
 
             cbDVTargetSize = sizeof(DWORD) + sizeof(DEVNAMES) + cbPrintName +
-                            cbDeviceName + cbOutputName + cbDevModeSize;
+                             cbDeviceName + cbOutputName + cbDevModeSize;
 
             // Allocate new target device using COM Task Allocator...
             ptd = (DVTARGETDEVICE*)CoTaskMemAlloc(cbDVTargetSize);
@@ -198,19 +198,19 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
                 ptd->tdSize = cbDVTargetSize;
 
                 ptd->tdDriverNameOffset = (WORD)dwOffset;
-                memcpy((BYTE*)(((BYTE*)ptd) + dwOffset), pwszDefProcessor, cbPrintName);
+                memcpy((BYTE *)(((BYTE *)ptd) + dwOffset), pwszDefProcessor, cbPrintName);
                 dwOffset += cbPrintName;
 
                 ptd->tdDeviceNameOffset = (WORD)dwOffset;
-                memcpy((BYTE*)(((BYTE*)ptd) + dwOffset), pwszDefDriver, cbDeviceName);
+                memcpy((BYTE *)(((BYTE *)ptd) + dwOffset), pwszDefDriver, cbDeviceName);
                 dwOffset += cbDeviceName;
 
                 ptd->tdPortNameOffset = (WORD)dwOffset;
-                memcpy((BYTE*)(((BYTE*)ptd) + dwOffset), pwszPort, cbOutputName);
+                memcpy((BYTE *)(((BYTE *)ptd) + dwOffset), pwszPort, cbOutputName);
                 dwOffset += cbOutputName;
 
                 ptd->tdExtDevmodeOffset = (WORD)dwOffset;
-                memcpy((BYTE*)(((BYTE*)ptd) + dwOffset), pdevMode, cbDevModeSize);
+                memcpy((BYTE *)(((BYTE *)ptd) + dwOffset), pDevMode, cbDevModeSize);
                 dwOffset += cbDevModeSize;
 
                 ASSERT(dwOffset == cbDVTargetSize);
@@ -221,7 +221,7 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
             }
 
             // We're done with the devmode...
-            DsoMemFree(pdevMode);
+            DsoMemFree(pDevMode);
         }
         else
         {
@@ -248,13 +248,13 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
         DWORD grfPrintFlags;
 
         // Setup the page range to print...
-        if ((ppgset = (PAGESET*)CoTaskMemAlloc(cbPgRngSize)) != NULL)
+        if ((ppgset = (PAGESET *)CoTaskMemAlloc(cbPgRngSize)) != NULL)
         {
-            ppgset->cbStruct = cbPgRngSize;
-            ppgset->cPageRange   = 1;
-            ppgset->fOddPages    = TRUE;
-            ppgset->fEvenPages   = TRUE;
-            ppgset->cPageRange   = 1;
+            ppgset->cbStruct    = cbPgRngSize;
+            ppgset->cPageRange  = 1;
+            ppgset->fOddPages   = TRUE;
+            ppgset->fEvenPages  = TRUE;
+            ppgset->cPageRange  = 1;
             ppgset->rgPages[0].nFromPage = ((nFrom) ? nFrom : 1);
             ppgset->rgPages[0].nToPage   = ((nTo) ? nTo : PAGESET_TOLASTPAGE);
 
@@ -263,16 +263,18 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
 
             SEH_TRY
 
-            // Setup the initial page number (optional)...
-            print->SetInitialPageNum(ppgset->rgPages[0].nFromPage);
+                // Setup the initial page number (optional)...
+                print->SetInitialPageNum(ppgset->rgPages[0].nFromPage);
 
-            grfPrintFlags = (PRINTFLAG_MAYBOTHERUSER | PRINTFLAG_RECOMPOSETODEVICE);
-            if (fPromptUser) grfPrintFlags |= PRINTFLAG_PROMPTUSER;
-            if (pwszOutput)  grfPrintFlags |= PRINTFLAG_PRINTTOFILE;
+                grfPrintFlags = (PRINTFLAG_MAYBOTHERUSER | PRINTFLAG_RECOMPOSETODEVICE);
+                if (fPromptUser)
+                    grfPrintFlags |= PRINTFLAG_PROMPTUSER;
+                if (pwszOutput)
+                    grfPrintFlags |= PRINTFLAG_PRINTTOFILE;
 
-            // Now ask server to print it using settings passed...
-            hr = print->Print(grfPrintFlags, &ptd, &ppgset, NULL, (IContinueCallback*)&m_xContinueCallback,
-                    ppgset->rgPages[0].nFromPage, &cPages, &cLastPage);
+                // Now ask server to print it using settings passed...
+                hr = print->Print(grfPrintFlags, &ptd, &ppgset, NULL, (IContinueCallback *)&m_xContinueCallback,
+                        ppgset->rgPages[0].nFromPage, &cPages, &cLastPage);
 
             SEH_EXCEPT(hr)
 
@@ -290,6 +292,7 @@ STDMETHODIMP CDsoDocObject::PrintDocument(LPCWSTR pwszPrinter, LPCWSTR pwszOutpu
     // We are done...
     if (ptd)
         CoTaskMemFree(ptd);
+
     print->Release();
     return hr;
 }
@@ -313,7 +316,7 @@ STDMETHODIMP CDsoDocObject::StartPrintPreview()
         return S_FALSE;
 
     // Otherwise, ask document server if it supports preview...
-    hr = m_pole->QueryInterface(IID_IOleInplacePrintPreview, (void**)&prev);
+    hr = m_pole->QueryInterface(IID_IOleInplacePrintPreview, (void **)&prev);
     if (SUCCEEDED(hr))
     {
         // Tell user we waiting (switch to preview can be slow for very large docs)...
@@ -331,8 +334,8 @@ STDMETHODIMP CDsoDocObject::StartPrintPreview()
 
                 // We will allow application to bother user and switch printers...
                 hr = prev->StartPrintPreview(
-                    (PREVIEWFLAG_MAYBOTHERUSER | PREVIEWFLAG_PROMPTUSER | PREVIEWFLAG_USERMAYCHANGEPRINTER),
-                    NULL, (IOlePreviewCallback*)&m_xPreviewCallback, 1);
+                        (PREVIEWFLAG_MAYBOTHERUSER | PREVIEWFLAG_PROMPTUSER | PREVIEWFLAG_USERMAYCHANGEPRINTER),
+                        NULL, (IOlePreviewCallback *)&m_xPreviewCallback, 1);
 
             SEH_EXCEPT(hr)
 
@@ -359,7 +362,8 @@ STDMETHODIMP CDsoDocObject::StartPrintPreview()
         if (PostMessage(m_hwndUIActiveObj, WM_KEYDOWN, VK_F5, 0x00000001) &&
             PostMessage(m_hwndUIActiveObj, WM_KEYUP,   VK_F5, 0xC0000001))
         {
-            hr = S_OK; m_fAttemptPptPreview = TRUE;
+            m_fAttemptPptPreview = TRUE;
+            hr = S_OK;
         }
     }
 
@@ -386,7 +390,8 @@ STDMETHODIMP CDsoDocObject::ExitPrintPreview(BOOL fForceExit)
         if (fForceExit) // Tell docobj we want to end preview...
         {
             HRESULT hr = m_pprtprv->EndPrintPreview(TRUE);
-            ASSERT(SUCCEEDED(hr)); (void)hr;
+            ASSERT(SUCCEEDED(hr));
+            (void)hr;
         }
     }
     else if (m_fInPptSlideShow)
