@@ -2672,7 +2672,9 @@ STDMETHODIMP CDsoFramerControl::XPersistStorage::Save(LPSTORAGE pStg, BOOL fSame
 
     hr = pStg->OpenStream(L"DsoFrameCtlContents", 0, dwStmMode, 0, &pstm);
     if (hr == STG_E_FILENOTFOUND)
+    {
         hr = pStg->CreateStream(L"DsoFrameCtlContents", dwStmMode, 0, 0, &pstm);
+    }
 
     if (SUCCEEDED(hr) && (pstm))
     {
@@ -2788,7 +2790,9 @@ STDMETHODIMP CDsoFramerControl::XOleObject::Close(DWORD dwSaveOption)
     }
 
     if (pThis->m_pOleAdviseHolder)
+    {
         pThis->m_pOleAdviseHolder->SendOnClose();
+    }
 
     return S_OK;
 }
@@ -2914,7 +2918,7 @@ STDMETHODIMP CDsoFramerControl::XOleObject::SetExtent(DWORD dwDrawAspect, SIZEL 
 
             // Resize the window based on the new size...
             SetWindowPos(pThis->m_hwnd, NULL, 0, 0, sl.cx, sl.cy,
-                SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+                         SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
         }
         else
         {

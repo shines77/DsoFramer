@@ -598,8 +598,9 @@ STDMETHODIMP CDsoFramerControl::Close()
         m_pDocObjFrame = NULL;
 
         SEH_TRY
-        pdframe->Close();
+            pdframe->Close();
         SEH_EXCEPT_NULL
+
         delete pdframe;
 
         // Notify host that item is now closed...
@@ -665,7 +666,8 @@ STDMETHODIMP CDsoFramerControl::put_Titlebar(VARIANT_BOOL vbool)
 STDMETHODIMP CDsoFramerControl::get_Titlebar(VARIANT_BOOL* pbool)
 {
     ODS("CDsoFramerControl::get_Titlebar\n");
-    if (pbool) *pbool = (m_fShowTitlebar ? VARIANT_TRUE : VARIANT_FALSE);
+    if (pbool)
+        *pbool = (m_fShowTitlebar ? VARIANT_TRUE : VARIANT_FALSE);
     return S_OK;
 }
 
@@ -701,7 +703,8 @@ STDMETHODIMP CDsoFramerControl::put_Toolbars(VARIANT_BOOL vbool)
 STDMETHODIMP CDsoFramerControl::get_Toolbars(VARIANT_BOOL* pbool)
 {
     ODS("CDsoFramerControl::get_Toolbars\n");
-    if (pbool) *pbool = (m_fShowToolbars ? VARIANT_TRUE : VARIANT_FALSE);
+    if (pbool)
+        *pbool = (m_fShowToolbars ? VARIANT_TRUE : VARIANT_FALSE);
     return S_OK;
 }
 
@@ -771,7 +774,7 @@ STDMETHODIMP CDsoFramerControl::ShowDialog(dsoShowDialogType DlgType)
         case dsoDialogSaveCopy:   dwOleCmd = OLECMDID_SAVECOPYAS; break;
         case dsoDialogPageSetup:  dwOleCmd = OLECMDID_PAGESETUP;  break;
         case dsoDialogProperties: dwOleCmd = OLECMDID_PROPERTIES; break;
-        default:                  dwOleCmd = OLECMDID_PRINT;
+        default:                  dwOleCmd = OLECMDID_PRINT;      break;
         }
         hr = m_pDocObjFrame->DoOleCommand(dwOleCmd, OLECMDEXECOPT_PROMPTUSER, NULL, NULL);
     }
@@ -1320,7 +1323,10 @@ STDMETHODIMP CDsoFramerControl::Invoke(DISPID dispIdMember, REFIID riid, LCID lc
     {
         // We are always enabled...
         if (pVarResult)
-            {pVarResult->vt = VT_BOOL;  pVarResult->boolVal = VARIANT_TRUE; }
+        {
+            pVarResult->vt = VT_BOOL;
+            pVarResult->boolVal = VARIANT_TRUE;
+        }
         return S_OK;
     }
 
