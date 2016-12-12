@@ -3162,7 +3162,8 @@ STDMETHODIMP CDsoFramerControl::XOleInplaceObject::SetObjectRects(LPCRECT lprcPo
 
         // set our control's location, but don't change it's size at all
         // [people for whom zooming is important should set that up here]
-        SetWindowPos(pThis->m_hwnd, NULL, lprcPosRect->left, lprcPosRect->top, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        SetWindowPos(pThis->m_hwnd, NULL, lprcPosRect->left, lprcPosRect->top,
+                     0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
     }
 
     // save out our current location.
