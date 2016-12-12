@@ -5,7 +5,7 @@ Exact from DsoFramer_KB311765_x86.exe, and re-format the source codes for more e
 ## DsoFramer ActiveX 控件
 从 DsoFramer_KB311765_x86.exe 里解压出来的，我把源代码格式化了一下，以便阅读和修改。
 
-DsoFramer_KB311765_x86.exe 是 DSOFramer 控件的最新版（截止到2014年3月），网上没比这个更新的了。微软官方开源的代码，已经不再更新了，下载连接也移除了，所以相对来说，比较老。内嵌很方便，基本上能满足大部分需求，可以打开OFFICE 2007的各种文档，好像Office 2010也可以，但是我没试过。
+DsoFramer_KB311765_x86.exe 是 DSOFramer 控件的最新版（截止到2014年3月），网上没有比这个更新的了。微软官方开源的代码，已经不再更新了，下载连接也移除了，实际的最后更新时间大约是在2005年左右，所以相对来说，比较老。内嵌很方便，基本上能满足大部分需求，可以打开office 2007的各种文档，好像Office 2010也可以，但是我没试过。
 
 ## 其他说明
 
